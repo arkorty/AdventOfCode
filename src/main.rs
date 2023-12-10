@@ -12,7 +12,7 @@ use std::{
 
 fn read_lines(day: u8) -> impl Iterator<Item = Result<String, impl std::error::Error>> {
     let cargo_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let dir = format!("{}/inputs/{}", cargo_dir, day);
+    let dir = format!("{}/inputs/day_{}", cargo_dir, day);
     let Ok(file) = File::open(&dir) else {
         panic!("File for day {day} not found at {dir}");
     };
@@ -20,8 +20,100 @@ fn read_lines(day: u8) -> impl Iterator<Item = Result<String, impl std::error::E
 }
 
 fn day_1() {
-    println!("Result for day 1: {}", 0);
     let inputs = read_lines(1);
+    let lines: Vec<String> = inputs.into_iter().map(|s| s.unwrap()).collect();
+
+    let mut sum: u32 = 0u32;
+
+    for line in lines {
+        let mut number: u32 = 0u32;
+        let chars: Vec<char> = line.chars().collect();
+        let dynstrlen: usize = chars.len();
+        for index in 0usize..dynstrlen {
+            let safelen: usize = dynstrlen - index;
+
+            if number / 10 == 0 && chars[index].is_numeric() {
+                number += match chars[index].to_digit(10) {
+                    Some(val) => val,
+                    None => 0,
+                } * 10;
+            }
+            if number / 10 == 0 && safelen >= 3 {
+                let three = &line.as_str().clone()[index..index + 3];
+
+                number += match three {
+                    "one" => 1,
+                    "two" => 2,
+                    "six" => 6,
+                    _ => 0,
+                } * 10;
+            }
+            if number / 10 == 0 && safelen >= 4 {
+                let four = &line.as_str().clone()[index..index + 4];
+
+                number += match four {
+                    "four" => 4,
+                    "five" => 5,
+                    "nine" => 9,
+                    _ => 0,
+                } * 10;
+            }
+            if number / 10 == 0 && safelen >= 5 {
+                let five = &line.as_str().clone()[index..index + 5];
+
+                number += match five {
+                    "three" => 3,
+                    "seven" => 7,
+                    "eight" => 8,
+                    _ => 0,
+                } * 10;
+            }
+
+            if number % 10 == 0 && chars[dynstrlen - index - 1].is_numeric() {
+                number += match chars[dynstrlen - index - 1].to_digit(10) {
+                    Some(val) => val,
+                    None => 0,
+                };
+            }
+
+            if number % 10 == 0 && safelen >= 3 {
+                let three = &line.as_str().clone()[dynstrlen - index - 3..dynstrlen - index];
+
+                number += match three {
+                    "one" => 1,
+                    "two" => 2,
+                    "six" => 6,
+                    _ => 0,
+                };
+            }
+
+            if number % 10 == 0 && safelen >= 4 {
+                let four = &line.as_str().clone()[dynstrlen - index - 4..dynstrlen - index];
+
+                number += match four {
+                    "four" => 4,
+                    "five" => 5,
+                    "nine" => 9,
+                    _ => 0,
+                };
+            }
+
+            if number % 10 == 0 && safelen >= 5 {
+                let five = &line.as_str().clone()[dynstrlen - index - 5..dynstrlen - index];
+
+                number += match five {
+                    "three" => 3,
+                    "seven" => 7,
+                    "eight" => 8,
+                    _ => 0,
+                };
+            }
+        }
+
+        sum += number;
+    }
+
+    println!("Result for day 1: {}", sum);
 }
 
 fn day_2() {
